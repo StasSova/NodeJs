@@ -34,18 +34,42 @@ const server = http.createServer((req, res) => {
 
   console.log(qstr);
   if (req.method === "POST") {
-    let body = "";
+    if (req.method === "GET") {
+      const content = fs.readFileSync(pathToFile);
+      res.setHeader("Content-Type", "text/html");
+      res.write(content);
+      res.end();
+    } else if (req.method === "POST") {
+      let body = "";
+      req.on("data", (chunk) => {
+        body += chunk;
+      });
+      req.on("end", () => {
+        const newData = JSON.parse(body);
 
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
+        fs.readFile("data.json", "utf8", (err, data) => {
+          let jsonData = [];
 
-    req.on("end", () => {
-      console.log("Body: ", body);
-      res.end("Received POST data");
-    });
-    //todo: сделать запись полученных данных в файл (append).
-    // вернуть страничку с тем, что данные успешно обновленны.
+          if (!err && data) {
+            jsonData = JSON.parse(data);
+          }
+          jsonData.push(newData);
+          fs.writeFile(
+            "data.json",
+            JSON.stringify(jsonData, null, 2),
+            (err) => {
+              if (err) {
+                res.statusCode = 500;
+                res.end("Internal Server Error");
+              } else {
+                res.statusCode = 201;
+                res.end("Created");
+              }
+            },
+          );
+        });
+      });
+    }
   } else {
     switch (url) {
       case "/": {
