@@ -1,9 +1,6 @@
-<p>CONTACTS PAGE</p>
-
-{{#if isShow}}
-    <ul>
-        {{#each contacts}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
-{{/if}}
+<h2>Contact Us</h2>
+<ul class="list-group">
+    {{#each contacts}}
+        <li class="list-group-item">{{this}}</li>
+    {{/each}}
+</ul>

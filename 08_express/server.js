@@ -32,9 +32,11 @@ app.get("/contacts", (req, res) => {
 app.get("/about", (req, res) => {
   res.render("about");
 });
+
 app.get("/products", (req, res) => {
   res.render("products", {
-    products,
+    title: "Our Products",
+    products: products,
   });
 });
 
